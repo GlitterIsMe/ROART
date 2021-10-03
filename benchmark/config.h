@@ -8,7 +8,7 @@
 const int max_thread_num = 36;
 
 //inline const char *nvm_dir = "/mnt/pmem0/jzc/";
-extern const char* nvm_dir;
+//extern const char* nvm_dir;
 
 enum IndexType { PART, FAST_FAIR, SKIPLIST, _IndexTypeNumber };
 

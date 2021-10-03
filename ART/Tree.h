@@ -105,7 +105,7 @@ class Tree {
       }
     }
 
-    bool Get(const std::string& key, const std::string* value) {
+    bool Get(const std::string& key, std::string* value) {
       // std::string raw_value;
       Key k;
       uint64_t v = 0;
@@ -115,8 +115,9 @@ class Tree {
         value = NULL;
         return false;
       }
-      std::string* temp = new std::string(ret->GetValue());
-      value = temp;
+      //std::string* temp = new std::string(ret->GetValue());
+      //value = temp;
+      value->append(std::string(ret->GetValue(), ret->val_len));
       return true;
     }
 
@@ -137,12 +138,12 @@ class Tree {
     bool Scan(const std::string& key, std::vector<KVPair>& values) {
       PART_ns::Key k, maxkey;
       uint64_t value = 0;
-		  uint64_t prefix_len = 19;
+		  uint64_t prefix_len = 8;
       std::string prefix = key.substr(0, prefix_len);
       k.Init((char*)prefix.c_str(), key.size(), (char*)&value, 8);
       /* need to modify */
       std::string bigger = prefix;
-      bigger[prefix_len-1] = (char*)bigger[prefix_len-1]+1;
+      bigger[prefix_len-1] = bigger[prefix_len-1]+1;
       maxkey.Init((char*)bigger.c_str(), bigger.size(), (char*)&value, 8);
 
       size_t resultFound = 0;

@@ -59,7 +59,7 @@ uint16_t Leaf::getFingerPrint() {
     uint16_t re = 0;
     auto k = GetKey();
     for (int i = 0; i < key_len; i++) {
-        re = re * 131 + k[i];
+        re = re * 131 + (uint8_t)k[i];
     }
     return re;
 }

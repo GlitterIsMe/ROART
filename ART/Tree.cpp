@@ -1472,7 +1472,7 @@ typename Tree::PCEqualsResults Tree::checkPrefixEquals(const N *n,
             uint8_t curKey =
                 i >= maxStoredPrefixLength ? kt->fkey[level] : p.prefix[i];
 #endif
-            if (curKey > startLevel && curKey < endLevel) 
+            if (curKey > startLevel && curKey < endLevel) {
             // if (curKey > startLevel && curKey < endLevel) {
                 return PCEqualsResults::Contained;
             } else if (curKey < startLevel || curKey > endLevel) { /*  curKey > endLevel */

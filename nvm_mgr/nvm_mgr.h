@@ -49,7 +49,7 @@ class NVMMgr {
     static const int max_threads = 64;
 
     static const int PGSIZE = 256 * 1024;                     // 256K
-    static const long long filesize = 1024LL * 1024 * 1024 * 180; // 256GB
+    static const long long filesize = 1024LL * 1024 * 1024 * 100; // 256GB
     
     static const size_t metadata_size = 4 * PGSIZE;
     static const size_t start_addr = 0x10000000;
@@ -58,7 +58,7 @@ class NVMMgr {
         thread_local_start + PGSIZE * max_threads;
 
     static const char *get_filename() {
-        static const std::string filename = std::string(nvm_dir) + "part.data";
+        static const std::string filename = std::string("/mnt/pmem/") + "part.data";
         return filename.c_str();
     }
 
