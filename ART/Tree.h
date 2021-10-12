@@ -144,7 +144,7 @@ class Tree {
       /* need to modify */
       std::string bigger = prefix;
       bigger[prefix_len-1] = bigger[prefix_len-1]+1;
-      maxkey.Init((char*)bigger.c_str(), bigger.size(), (char*)&value, 8);
+      maxkey.Init((char*)bigger.data(), bigger.size(), (char*)&value, 8);
 
       size_t resultFound = 0;
       PART_ns::Key* continueKey = nullptr;

@@ -21,7 +21,7 @@ add_definitions(-DACMA) # for fastfair and skiplist with dcmm
 add_definitions(-DFF_GC) # ff_gc
 add_definitions(-DRECLAIM_MEMORY)
 add_definitions(-DKEY_INLINE)
-#add_definitions(-DARTPMDK) # for DLART with PMDK
+add_definitions(-DARTPMDK) # for DLART with PMDK
 #add_definitions(-DCOUNT_ALLOC)
 #add_definitions(-DLOG_FREE)
 #add_definitions(-DCHECK_COUNT)

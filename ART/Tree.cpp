@@ -57,9 +57,9 @@ Tree::Tree() {
     NVMMgr *mgr = get_nvm_mgr();
     //    Epoch_Mgr * epoch_mgr = new Epoch_Mgr();
 #ifdef ARTPMDK
-    const char *pool_name = "/mnt/pmem0/matianmao/dlartpmdk.data";
+    const char *pool_name = "/mnt/pmem/roart/dlartpmdk.data";
     const char *layout_name = "DLART";
-    size_t pool_size = 64LL * 1024 * 1024 * 1024; // 16GB
+    size_t pool_size = 100LL * 1024 * 1024 * 1024; // 16GB
 
     if (access(pool_name, 0)) {
         pmem_pool = pmemobj_create(pool_name, layout_name, pool_size, 0666);
@@ -77,7 +77,7 @@ Tree::Tree() {
     root = new (allocate_size(sizeof(N256))) N256(0, {});
     flush_data((void *)root, sizeof(N256));
 
-#else
+/*#else
 
     if (mgr->first_created) {
         // first open
@@ -99,8 +99,9 @@ Tree::Tree() {
         //        mgr->recovery_free_memory();
         //#endif
     }
-
+*/
 #endif
+
 }
 
 Tree::~Tree() {
@@ -499,7 +500,7 @@ bool Tree::lookupRange(const Key *start, const Key *end, const Key *continueKey,
                         toContinue = N::getLeaf(node);
                         return;
                     }
-                    result.push_back({std::string(leaf->GetKey()), std::string(leaf->GetValue())});
+                    result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(leaf->GetValue(), leaf->val_len)});
                     resultsFound++;
                 }
             } else {

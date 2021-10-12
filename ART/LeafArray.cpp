@@ -281,6 +281,9 @@ std::vector<Leaf *> LeafArray::getSortedLeaf(const Key *start, const Key *end,
     while (i < LeafArrayLength) {
         auto ptr = getLeafAt(i);
         i = b._Find_next(i);
+        if (!ptr) {
+            continue;
+        }
         // start <= ptr < end
         if (compare_start) {
             auto lt_start = leaf_key_lt(ptr, start, start_level);
