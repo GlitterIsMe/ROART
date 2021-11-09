@@ -8,6 +8,8 @@
 #include <libpmemobj.h>
 #include <set>
 
+#include "global_log.h"
+
 namespace PART_ns {
   using KVPair = std::pair<std::string, std::string>;
 
@@ -95,7 +97,11 @@ class Tree {
     /* add for zyw test */
     bool Put(const std::string& key, const std::string& value) {
       Key k;
-      k.Init((char*)key.c_str(), key.size(), (char*)value.c_str(), value.size());
+      std::string v(pmlog::GenerateRawEntry(value));
+      pmlog::PmAddr addr = pmlog::global_log_->Alloc(v.size());
+      pmlog::global_log_->Append(addr, v);
+      //k.Init((char*)key.c_str(), key.size(), (char*)value.data(), value.size());
+      k.Init((char*)key.c_str(), key.size(), (char*)(&addr), sizeof(uint64_t));
       OperationResults res = this->insert(&k);
       // printf("test\n");
       if (res == OperationResults::Success) {
@@ -117,7 +123,9 @@ class Tree {
       }
       //std::string* temp = new std::string(ret->GetValue());
       //value = temp;
-      value->append(std::string(ret->GetValue(), ret->val_len));
+      uint64_t addr = *(uint64_t*)(ret->GetValue());
+      uint64_t value_size = pmlog::DecodeSize(pmlog::global_log_->raw() + addr);
+      value->append(std::string(pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size));
       return true;
     }
 

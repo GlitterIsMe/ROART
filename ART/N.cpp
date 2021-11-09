@@ -70,13 +70,13 @@ void Leaf::graphviz_debug(std::ofstream &f) {
     sprintf(buf + strlen(buf), "Leaf\n");
     sprintf(buf + strlen(buf), "Key Len: %d\n", this->key_len);
     for (int i = 0; i < this->key_len; i++) {
-        sprintf(buf + strlen(buf), "%c ", this->kv[i]);
+        //sprintf(buf + strlen(buf), "%c ", this->kv[i]);
     }
     sprintf(buf + strlen(buf), "\n");
 
     sprintf(buf + strlen(buf), "Val Len: %d\n", this->val_len);
     for (int i = 0; i < this->val_len; i++) {
-        sprintf(buf + strlen(buf), "%c ", this->kv[key_len + i]);
+       // sprintf(buf + strlen(buf), "%c ", this->kv[key_len + i]);
     }
     sprintf(buf + strlen(buf), "\n");
     sprintf(buf + strlen(buf), "\"]\n");
@@ -825,17 +825,17 @@ void N::rebuild_node(N *node, std::vector<std::pair<uint64_t, size_t>> &rs,
         NTypes type = leaf->type;
         size_t size = size_align(get_node_size(type), 64);
         //        size = convert_power_two(size);
-        rs.insert(std::make_pair((uint64_t)leaf, size));
+        rs.push_back(std::make_pair((uint64_t)leaf, size));
 
         // leaf key also need to insert into rs set
         size = leaf->key_len;
         //        size = convert_power_two(size);
-        rs.insert(std::make_pair((uint64_t)(leaf->fkey), size));
+        rs.push_back(std::make_pair((uint64_t)(leaf->fkey), size));
 
         // value
         size = leaf->val_len;
         //        size = convert_power_two(size);
-        rs.insert(std::make_pair((uint64_t)(leaf->value), size));
+        rs.push_back(std::make_pair((uint64_t)(leaf->value), size));
 #endif // KEY_INLINE
 
 #endif

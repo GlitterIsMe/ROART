@@ -52,6 +52,9 @@ void *allocate_size(size_t size) {
 Tree::Tree() {
     std::cout << "[P-ART]\tnew P-ART\n";
 
+    // init log
+    pmlog::global_log_ = new pmlog::LogStore("/mnt/pmem/roart/log", 32UL * 1024 * 1024 * 1024);
+
     init_nvm_mgr();
     register_threadinfo();
     NVMMgr *mgr = get_nvm_mgr();
@@ -59,7 +62,7 @@ Tree::Tree() {
 #ifdef ARTPMDK
     const char *pool_name = "/mnt/pmem/roart/dlartpmdk.data";
     const char *layout_name = "DLART";
-    size_t pool_size = 100LL * 1024 * 1024 * 1024; // 16GB
+    size_t pool_size = 64LL * 1024 * 1024 * 1024; // 16GB
 
     if (access(pool_name, 0)) {
         pmem_pool = pmemobj_create(pool_name, layout_name, pool_size, 0666);
@@ -168,6 +171,7 @@ bool getAllLeaves(N* node, Leaf* result[], std::size_t resultSize, std::size_t&r
         N *n = std::get<1>(children[i]);
         getAllLeaves(n, result, resultSize, resultsFound);
     }
+    return true;
 }
 
 bool Tree::prefixScan(const Key *prefix, const Key * continueKey, Leaf* result[], std::size_t resultSize, std::size_t &resultsFound) const {
@@ -293,6 +297,7 @@ restart:
                     restart_cnt++;
                     goto restart;
                 }
+                printf("\n%d\n", level);
                 return ret;
             }
         }
@@ -500,7 +505,9 @@ bool Tree::lookupRange(const Key *start, const Key *end, const Key *continueKey,
                         toContinue = N::getLeaf(node);
                         return;
                     }
-                    result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(leaf->GetValue(), leaf->val_len)});
+                    uint64_t addr = *(uint64_t*)(leaf->GetValue());
+                    uint64_t value_size = pmlog::DecodeSize(pmlog::global_log_->raw() + addr);
+                    result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size)});
                     resultsFound++;
                 }
             } else {
@@ -1373,6 +1380,7 @@ Tree::checkPrefixPessimistic(N *n, const Key *k, uint32_t &level,
             uint8_t curKey = i >= maxStoredPrefixLength ? (uint8_t)kt->kv[level]
                                                         : p.prefix[i];
 #else
+            printf("%d\n", kt->key_len);
             uint8_t curKey =
                 i >= maxStoredPrefixLength ? kt->fkey[level] : p.prefix[i];
 #endif
