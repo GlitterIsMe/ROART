@@ -63,7 +63,12 @@ Leaf *LeafArray::lookup(const Key *k) const {
 
     return nullptr;
 }
+uint64_t count = 0;
 bool LeafArray::insert(Leaf *l, bool flush) {
+    count++;
+    if (count % 1000000 == 0) {
+        printf("cur level %d\n", level);
+    }
     auto b = bitmap.load();
     b.flip();
     auto pos = b._Find_first();

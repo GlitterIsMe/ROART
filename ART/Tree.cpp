@@ -32,6 +32,8 @@ POBJ_LAYOUT_TOID(DLART, char);
 POBJ_LAYOUT_END(DLART);
 PMEMobjpool *pmem_pool;
 
+uint64_t count{0};
+
 void *allocate_size(size_t size) {
 #ifdef COUNT_ALLOC
     if (alloc_time == nullptr)
@@ -297,7 +299,7 @@ restart:
                     restart_cnt++;
                     goto restart;
                 }
-                printf("\n%d\n", level);
+                //printf("\n%d\n", level);
                 return ret;
             }
         }

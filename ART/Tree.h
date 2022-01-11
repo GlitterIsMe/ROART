@@ -146,7 +146,7 @@ class Tree {
     bool Scan(const std::string& key, std::vector<KVPair>& values) {
       PART_ns::Key k, maxkey;
       uint64_t value = 0;
-		  uint64_t prefix_len = 8;
+      uint64_t prefix_len = 8;
       std::string prefix = key.substr(0, prefix_len);
       k.Init((char*)prefix.c_str(), key.size(), (char*)&value, 8);
       /* need to modify */
