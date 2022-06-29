@@ -2,8 +2,8 @@
 // Created by zzyyyww on 2021/8/24.
 //
 
-#ifndef CCEH_LOG_H
-#define CCEH_LOG_H
+#ifndef ROART_LOG_H
+#define ROART_LOG_H
 
 
 #include <libpmem.h>
@@ -12,7 +12,7 @@
 #include <atomic>
 #include <cstring>
 
-namespace pmlog {
+namespace roart_pmlog {
 
     inline std::string GenerateRawEntry(std::string entry){
         uint64_t size = entry.size();
@@ -64,5 +64,5 @@ namespace pmlog {
     };
 }
 
-#endif //CCEH_LOG_H
+#endif //ROART_LOG_H
 

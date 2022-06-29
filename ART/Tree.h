@@ -97,9 +97,9 @@ class Tree {
     /* add for zyw test */
     bool Put(const std::string& key, const std::string& value) {
       Key k;
-      std::string v(pmlog::GenerateRawEntry(value));
-      pmlog::PmAddr addr = pmlog::global_log_->Alloc(v.size());
-      pmlog::global_log_->Append(addr, v);
+      std::string v(roart_pmlog::GenerateRawEntry(value));
+      roart_pmlog::PmAddr addr = roart_pmlog::global_log_->Alloc(v.size());
+      roart_pmlog::global_log_->Append(addr, v);
       //k.Init((char*)key.c_str(), key.size(), (char*)value.data(), value.size());
       k.Init((char*)key.c_str(), key.size(), (char*)(&addr), sizeof(uint64_t));
       OperationResults res = this->insert(&k);
@@ -124,8 +124,8 @@ class Tree {
       //std::string* temp = new std::string(ret->GetValue());
       //value = temp;
       uint64_t addr = *(uint64_t*)(ret->GetValue());
-      uint64_t value_size = pmlog::DecodeSize(pmlog::global_log_->raw() + addr);
-      value->append(std::string(pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size));
+      uint64_t value_size = roart_pmlog::DecodeSize(roart_pmlog::global_log_->raw() + addr);
+      value->append(std::string(roart_pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size));
       return true;
     }
 

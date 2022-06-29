@@ -4,6 +4,6 @@
 
 #include "global_log.h"
 
-namespace pmlog {
+namespace roart_pmlog {
     LogStore* global_log_;
 }

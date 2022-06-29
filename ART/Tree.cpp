@@ -55,14 +55,14 @@ Tree::Tree() {
     std::cout << "[P-ART]\tnew P-ART\n";
 
     // init log
-    pmlog::global_log_ = new pmlog::LogStore("/mnt/pmem/roart/log", 32UL * 1024 * 1024 * 1024);
+    roart_pmlog::global_log_ = new roart_pmlog::LogStore("/mnt/pmem1/roart/log", 32UL * 1024 * 1024 * 1024);
 
     init_nvm_mgr();
     register_threadinfo();
-    NVMMgr *mgr = get_nvm_mgr();
-    //    Epoch_Mgr * epoch_mgr = new Epoch_Mgr();
+    //NVMMgr *mgr = get_nvm_mgr();
+    //Epoch_Mgr * epoch_mgr = new Epoch_Mgr();
 #ifdef ARTPMDK
-    const char *pool_name = "/mnt/pmem/roart/dlartpmdk.data";
+    const char *pool_name = "/mnt/pmem1/roart/dlartpmdk.data";
     const char *layout_name = "DLART";
     size_t pool_size = 64LL * 1024 * 1024 * 1024; // 16GB
 
@@ -508,8 +508,8 @@ bool Tree::lookupRange(const Key *start, const Key *end, const Key *continueKey,
                         return;
                     }
                     uint64_t addr = *(uint64_t*)(leaf->GetValue());
-                    uint64_t value_size = pmlog::DecodeSize(pmlog::global_log_->raw() + addr);
-                    result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size)});
+                    uint64_t value_size = roart_pmlog::DecodeSize(roart_pmlog::global_log_->raw() + addr);
+                    result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(roart_pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size)});
                     resultsFound++;
                 }
             } else {
