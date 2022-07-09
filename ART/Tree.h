@@ -9,6 +9,7 @@
 #include <set>
 
 #include "global_log.h"
+#include "../../../lib/latency_counter.h"
 
 namespace PART_ns {
   using KVPair = std::pair<std::string, std::string>;
@@ -97,12 +98,16 @@ class Tree {
     /* add for zyw test */
     bool Put(const std::string& key, const std::string& value) {
       Key k;
+      START
       std::string v(roart_pmlog::GenerateRawEntry(value));
       roart_pmlog::PmAddr addr = roart_pmlog::global_log_->Alloc(v.size());
       roart_pmlog::global_log_->Append(addr, v);
+      LOG_END
+      START
       //k.Init((char*)key.c_str(), key.size(), (char*)value.data(), value.size());
       k.Init((char*)key.c_str(), key.size(), (char*)(&addr), sizeof(uint64_t));
       OperationResults res = this->insert(&k);
+      INDEX_END
       // printf("test\n");
       if (res == OperationResults::Success) {
         return true;
@@ -115,25 +120,31 @@ class Tree {
       // std::string raw_value;
       Key k;
       uint64_t v = 0;
+      START
       k.Init((char*)key.c_str(), key.size(), (char*)&v, 8);
       Leaf* ret = this->lookup(&k);
+      INDEX_END
       if (ret == nullptr) {
         value = NULL;
         return false;
       }
       //std::string* temp = new std::string(ret->GetValue());
       //value = temp;
+      START
       uint64_t addr = *(uint64_t*)(ret->GetValue());
       uint64_t value_size = roart_pmlog::DecodeSize(roart_pmlog::global_log_->raw() + addr);
       value->append(std::string(roart_pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size));
+      LOG_END
       return true;
     }
 
     bool Delete(const std::string& key) {
       Key k;
       uint64_t value = 0;
+      START
       k.Init((char*)key.c_str(), key.size(), (char*)&value, 8);
       OperationResults res = this->remove(&k);
+      INDEX_END
       if (OperationResults::Success == res) {
         return true;
       } else {
@@ -156,7 +167,9 @@ class Tree {
 
       size_t resultFound = 0;
       PART_ns::Key* continueKey = nullptr;
+      START
       this->lookupRange(&k, &maxkey, continueKey, values, 0, resultFound);
+      INDEX_END
       // printf("prefix = %s\n", key.substr(0, 18).c_str());
       // for (std::vector<KVPair>::const_iterator iter = values.cbegin(); iter != values.cend(); iter++) {
       //   printf("prefix scan: %s\n", (*iter).first.c_str());

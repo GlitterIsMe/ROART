@@ -507,10 +507,12 @@ bool Tree::lookupRange(const Key *start, const Key *end, const Key *continueKey,
                         toContinue = N::getLeaf(node);
                         return;
                     }
+                    //START
                     uint64_t addr = *(uint64_t*)(leaf->GetValue());
                     uint64_t value_size = roart_pmlog::DecodeSize(roart_pmlog::global_log_->raw() + addr);
                     result.push_back({std::string(leaf->GetKey(), leaf->key_len), std::string(roart_pmlog::global_log_->raw() + addr + sizeof(uint64_t), value_size)});
                     resultsFound++;
+                    //LOG_END
                 }
             } else {
                 std::tuple<uint8_t, N *> children[256];
