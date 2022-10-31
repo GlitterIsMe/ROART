@@ -34,6 +34,8 @@ PMEMobjpool *pmem_pool;
 
 uint64_t count{0};
 
+uint64_t alloc_pm_size = 0;
+
 void *allocate_size(size_t size) {
 #ifdef COUNT_ALLOC
     if (alloc_time == nullptr)
@@ -42,6 +44,7 @@ void *allocate_size(size_t size) {
 #endif
     PMEMoid ptr;
     pmemobj_zalloc(pmem_pool, &ptr, size, TOID_TYPE_NUM(char));
+    alloc_pm_size += size;
     void *addr = (void *)pmemobj_direct(ptr);
 
 #ifdef COUNT_ALLOC
@@ -116,6 +119,7 @@ Tree::~Tree() {
     std::cout << "[P-ART]\tshut down, free the tree\n";
     unregister_threadinfo();
     close_nvm_mgr();
+    print_alloc_pm();
 }
 
 // allocate a leaf and persist it

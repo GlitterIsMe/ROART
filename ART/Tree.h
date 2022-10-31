@@ -14,6 +14,9 @@
 namespace PART_ns {
   using KVPair = std::pair<std::string, std::string>;
 
+  extern uint64_t alloc_pm_size;
+  inline void print_alloc_pm() {printf("Allocated %.2f MB PM space\n", alloc_pm_size / 1024.0 / 1024.0);}
+
 class Tree {
   public:
   private:
